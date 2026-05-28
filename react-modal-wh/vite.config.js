@@ -12,17 +12,11 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'src/index.js'),
             name: 'ReactModalWh',
-            formats: ['es', 'cjs'],
-            fileName: (format) => `index.${format}.js`,
+            formats: ['es'],
+            fileName: () => 'index.js',
         },
         rollupOptions: {
-            external: ['react', 'react-dom'],
-            output: {
-                globals: {
-                    react: 'React',
-                    'react-dom': 'ReactDOM',
-                },
-            },
+            external: (id) => id === 'react' || id === 'react-dom' || id.startsWith('react/'),
         },
     },
 })
