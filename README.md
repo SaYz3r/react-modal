@@ -2,27 +2,37 @@
 
 Composant fenêtre modale React créé pour l'application HRnet de WealthHealth. Il remplace le plugin jQuery `jquery.modal.js`.
 
+## Prérequis
+
+- Node.js >= 14
+- React >= 17
+- React DOM >= 17
+
 ## Installation
 
 ```bash
 npm install @sayz3r/react-modal-wh
 ```
 
+## Description
+
+`@sayz3r/react-modal-wh` est un composant React qui affiche une fenêtre modale. Il gère son propre state en interne via `useImperativeHandle` et `forwardRef` — le composant parent n'a pas besoin de gérer l'ouverture ou la fermeture, il suffit d'appeler `modalRef.current.open()` et `modalRef.current.close()`.
+
 ## Utilisation
 
 ```jsx
-import { useState } from 'react'
+import { useRef } from 'react'
 import Modal from '@sayz3r/react-modal-wh'
 import '@sayz3r/react-modal-wh/dist/react-modal-wh.css'
 
 function App() {
-    const [isOpen, setIsOpen] = useState(false)
+    const modalRef = useRef()
 
     return (
         <>
-            <button onClick={() => setIsOpen(true)}>Ouvrir
+            <button onClick={() => modalRef.current.open()}>Ouvrir
 
-            <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+
                 Employee Created!
 
         </>
@@ -32,36 +42,24 @@ function App() {
 
 ## Props
 
-| Prop       | Type        | Requis | Description                                                                            |
-| ---------- | ----------- | ------ | -------------------------------------------------------------------------------------- |
-| `isOpen`   | `boolean`   | ✅     | Contrôle l'affichage de la modale. `true` = visible, `false` = cachée                  |
-| `onClose`  | `function`  | ✅     | Callback appelé quand l'utilisateur ferme la modale (clic sur overlay ou bouton Close) |
-| `children` | `ReactNode` | ✅     | Contenu affiché à l'intérieur de la modale                                             |
+| Prop       | Type        | Requis | Description                                                             |
+| ---------- | ----------- | ------ | ----------------------------------------------------------------------- |
+| `ref`      | `React.Ref` | ✅     | Ref pour contrôler la modale depuis le parent via `open()` et `close()` |
+| `children` | `ReactNode` | ✅     | Contenu affiché à l'intérieur de la modale                              |
 
-## Exemple dans HRnet
+## Méthodes exposées via ref
 
-Dans l'application HRnet, la modale est utilisée pour confirmer la création d'un employé :
-
-```jsx
-const [isModalOpen, setIsModalOpen] = useState(false)
-
-const handleSubmit = (e) => {
-    e.preventDefault()
-    dispatch(addEmployee(newEmployee))
-    setIsModalOpen(true)
-}
-
-<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-    Employee Created!
-
-```
+| Méthode                    | Description     |
+| -------------------------- | --------------- |
+| `modalRef.current.open()`  | Ouvre la modale |
+| `modalRef.current.close()` | Ferme la modale |
 
 ## Fonctionnement
 
-- Si `isOpen` est `false`, le composant ne rend rien (`return null`)
-- Un clic sur l'overlay (fond sombre) ferme la modale via `onClose`
-- Un clic à l'intérieur du panneau ne ferme pas la modale (`stopPropagation`)
-- Le bouton **Close** appelle `onClose`
+- Le state `isOpen` est géré en interne dans le composant
+- Un clic sur l'overlay ferme la modale
+- Un clic à l'intérieur du panneau ne ferme pas la modale
+- Le bouton **Close** ferme la modale
 
 ## Lien npm
 
